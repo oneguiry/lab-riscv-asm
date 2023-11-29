@@ -1,2 +1,2 @@
-*.S linguist-language=ASM
+*.S linguist-language=Assembly
 *.c linguist-language=C
