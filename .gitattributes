@@ -1,2 +1,2 @@
-./* linguist-documentation=false
-./* linguist-vendored
+*.S linguist-language=ASM
+*.c linguist-language=C
