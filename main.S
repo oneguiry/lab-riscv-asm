@@ -4,13 +4,14 @@ N:
 M:
 .word 6
 matrix:
-.word 1, 2, 3, 4, 5
+.word 0, 0, 3, 4, 5
 .word -1, -2, -3, -4, -5
 .word 1, 2, 3, 4, 5
 .word -1, -2, -3, -4, -5
 .word 1, 2, 3, 4, 5
 .word -1, -2, -3, -4, -5
 result:
+.word 0
 .word 0
 .word 0
 .text
@@ -27,7 +28,7 @@ call print
 call exit
 
 print:
-addi t5, x0, 2
+addi t5, x0, 3
 addi t2, x0, 0
 
 print_cycle:
@@ -53,23 +54,40 @@ lw t1, 0(a2) # N
 lw t2, 0(a3) # M
 
 addi t4, x0, 0 # row pointer
-addi t5, t5, 0 # count negative
-addi t0, t0, 0 # count positive
+addi t5, x0, 0 # count for numbers
+
 init:
 addi t3, x0, 0 # row element number
 
 cycle:
 lw t6, 0(a4) # load value from array
 addi a4, a4, 4 # increment array pointer
-# Тут делается проверка на >0<
+
+# Тут делается проверка числа
 bgtz t6, sw_posedge
-addi t5, t5, 1
-sw t5, 4(a5)
-j, skip_write
+bltz t6, sw_negedge
+beqz t6, sw_zero
 
 sw_posedge:
-addi t0, t0, 1
-sw t0, 0(a5)
+lw t5, 0(a5)
+addi t5, t5, 1
+sw t5, 0(a5)
+addi t5, x5, 0
+j, skip_write
+
+sw_negedge:
+lw t5, 4(a5)
+addi t5, t5, 1
+sw t5, 4(a5)
+addi t5, x0, 0
+j, skip_write
+
+sw_zero:
+lw t5, 8(a5)
+addi t5, t5, 1
+sw t5, 8(a5)
+addi t5, x0, 0
+j, skip_write
 
 skip_write:
 addi t3, t3, 1
